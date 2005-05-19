@@ -607,85 +607,6 @@ computeManyPrimeProducts(peptides,multiples)
 
 	OUTPUT:
 		RETVAL
-
-int
-testManyBitStrings(encodedCandidate,peptides,bitstrings,answer)
-	SV *encodedCandidate
-	AV *peptides
-	AV *bitstrings
-	AV *answer
-
-	CODE:
-#ifdef WIN
-{
-#endif
-		SV **sv;
-		int i, count;
-		STRLEN len;
-#ifdef USE_VERYLONG
-#define OURLONG Uverylong
-#else
-#define OURLONG unsigned long
-#endif
-		OURLONG u[20],v[20]; /* this may not work correctly if there are an odd # of 32-bit words */
-		OURLONG *uPtr,*vPtr,*maxUPtr;
-		OURLONG val;
-		int longlongwordlen;
-		char *p;
-		int total = 0;
-#ifdef CUTILITIES_DEBUG
-int j;
-#endif /* CUTILITIES_DEBUG */
-
-		av_clear(answer);
-		p = SvPV(encodedCandidate,len);
-		memcpy((char *) v,p,len);
-		longlongwordlen = (len+sizeof(u[0])-1)/sizeof(u[0]);
-		u[longlongwordlen-1] = 0;
-		v[longlongwordlen-1] = 0;
-		count = av_len(peptides);
-		maxUPtr = &u[longlongwordlen];
-#ifdef CUTILITIES_DEBUG
-printf("Len: %d, count: %d\n",len,count);
-#endif /* CUTILITIES_DEBUG */
-		for (i = 0; i <= count; i++) {
-			sv = av_fetch(bitstrings,i,0);
-			p = SvPV(*sv,len);
-			memcpy(u,p,len);
-#ifdef CUTILITIES_DEBUG
-printf("iteration %d, fetched %d bytes\n",i,len);
-j=0;
-#endif /* CUTILITIES_DEBUG */
-			for (uPtr = u, vPtr = v; uPtr < maxUPtr; uPtr++, vPtr++) {
-				if ((val = ((*uPtr & *vPtr) ^ *uPtr))) {
-#ifdef CUTILITIES_DEBUG
-printf("D:%d,%lx,%lx,%lx\n",uPtr-u,*uPtr,*vPtr,val);
-#endif /* CUTILITIES_DEBUG */
-					break;
-				}
-#ifdef CUTILITIES_DEBUG
-j++;
-#endif /* CUTILITIES_DEBUG */
-			}
-#ifdef CUTILITIES_DEBUG
-printf("j:%d ",j);
-#endif /* CUTILITIES_DEBUG */
-			if (! val) {
-#ifdef CUTILITIES_DEBUG
-printf("*");
-#endif /* CUTILITIES_DEBUG */
-				sv = av_fetch(peptides,i,0);
-				av_push(answer,*sv);
-				SvREFCNT_inc(*sv);
-				total++;
-			}
-		}
-		RETVAL = total;
-#ifdef WIN
-}
-#endif
-	OUTPUT:
-		RETVAL
 		
 void
 encodeAsBitString(peptide)
@@ -774,3 +695,82 @@ printf("%02x",out[i]);
 printf("\n");
 #endif /* CUTILITIES_DEBUG */
 		sv_setpvn(ST(0),(char *) out, (bitcount+7)/8);
+
+int
+testManyBitStrings(encodedCandidate,peptides,bitstrings,answer)
+	SV *encodedCandidate
+	AV *peptides
+	AV *bitstrings
+	AV *answer
+
+	CODE:
+#ifdef WIN
+{
+#endif
+		SV **sv;
+		int i, count;
+		STRLEN len;
+#ifdef USE_VERYLONG
+#define OURLONG Uverylong
+#else
+#define OURLONG unsigned long
+#endif
+		OURLONG u[20],v[20]; /* this may not work correctly if there are an odd # of 32-bit words */
+		OURLONG *uPtr,*vPtr,*maxUPtr;
+		OURLONG val;
+		int longlongwordlen;
+		char *p;
+		int total = 0;
+#ifdef CUTILITIES_DEBUG
+int j;
+#endif /* CUTILITIES_DEBUG */
+
+		av_clear(answer);
+		p = SvPV(encodedCandidate,len);
+		memcpy((char *) v,p,len);
+		longlongwordlen = (len+sizeof(u[0])-1)/sizeof(u[0]);
+		u[longlongwordlen-1] = 0;
+		v[longlongwordlen-1] = 0;
+		count = av_len(peptides);
+		maxUPtr = &u[longlongwordlen];
+#ifdef CUTILITIES_DEBUG
+printf("Len: %d, count: %d\n",len,count);
+#endif /* CUTILITIES_DEBUG */
+		for (i = 0; i <= count; i++) {
+			sv = av_fetch(bitstrings,i,0);
+			p = SvPV(*sv,len);
+			memcpy(u,p,len);
+#ifdef CUTILITIES_DEBUG
+printf("iteration %d, fetched %d bytes\n",i,len);
+j=0;
+#endif /* CUTILITIES_DEBUG */
+			for (uPtr = u, vPtr = v; uPtr < maxUPtr; uPtr++, vPtr++) {
+				if ((val = ((*uPtr & *vPtr) ^ *uPtr))) {
+#ifdef CUTILITIES_DEBUG
+printf("D:%d,%lx,%lx,%lx\n",uPtr-u,*uPtr,*vPtr,val);
+#endif /* CUTILITIES_DEBUG */
+					break;
+				}
+#ifdef CUTILITIES_DEBUG
+j++;
+#endif /* CUTILITIES_DEBUG */
+			}
+#ifdef CUTILITIES_DEBUG
+printf("j:%d ",j);
+#endif /* CUTILITIES_DEBUG */
+			if (! val) {
+#ifdef CUTILITIES_DEBUG
+printf("*");
+#endif /* CUTILITIES_DEBUG */
+				sv = av_fetch(peptides,i,0);
+				av_push(answer,*sv);
+				SvREFCNT_inc(*sv);
+				total++;
+			}
+		}
+		RETVAL = total;
+#ifdef WIN
+}
+#endif
+	OUTPUT:
+		RETVAL
