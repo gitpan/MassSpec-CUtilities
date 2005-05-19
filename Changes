@@ -1,0 +1,6 @@
+Revision history for Perl extension MassSpec::CUtilities.
+
+0.01  Fri May 13 17:08:36 2005
+	- original version; created by h2xs 1.22 with options
+		-Oxan MassSpec::CUtilities CUtilities.h
+
