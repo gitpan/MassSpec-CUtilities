@@ -623,7 +623,10 @@ encodeAsBitString(peptide)
 		static int bitmax[22];
 		static int bitmaxcount = 0;
 		static int outsize;
-		static unsigned char *out;
+		static unsigned char *tempout;
+		unsigned char *out;
+		SV *mysv;
+		STRLEN len;
 
 		if (!inited) {
 			int thesize = sizeof(lookup)/sizeof(lookup[0]);
@@ -644,14 +647,16 @@ encodeAsBitString(peptide)
 				}
 			}
 			outsize = (bitcount+7)/8;
-			out = malloc(outsize+2); /* a few extra bytes for good measure */
+			tempout = malloc(outsize+2); /* a few extra bytes for good measure */
 #ifdef CUTILITIES_DEBUG
 printf("Running encodeAsBitString initialization code, bitmaxcount=%d,outsize=%d\n",bitmaxcount,outsize);
 #endif /* CUTILITIES_DEBUG */
 		}
 
+		memset(tempout,'\0',outsize);
+		mysv = newSVpvn(tempout,outsize);
+		out = SvPV(mysv,len);
 		bitcount = 0;
-		memset(out,'\0',outsize);
 #ifdef CUTILITIES_DEBUG
 printf("Setting %d zero bytes at %lx\n",outsize,(long) out);
 #endif /* CUTILITIES_DEBUG */
@@ -686,7 +691,7 @@ printf("Appending 1 at position %d for %s, output byte is now: %x\n",bitcount,pe
 			unused = bitmax[++i];
 		}
 
-		ST(0) = sv_newmortal();
+		ST(0) = mysv;
 #ifdef CUTILITIES_DEBUG
 printf("Returning a %d byte string for %s\n",(bitcount+7)/8,peptide);
 for (i = 0; i < outsize; i++) {
@@ -694,7 +699,6 @@ printf("%02x",out[i]);
 }
 printf("\n");
 #endif /* CUTILITIES_DEBUG */
-		sv_setpvn(ST(0),(char *) out, (bitcount+7)/8);
 
 int
 testManyBitStrings(encodedCandidate,peptides,bitstrings,answer)

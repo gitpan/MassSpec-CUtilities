@@ -5,4 +5,6 @@ Revision history for Perl extension MassSpec::CUtilities.
 		-Oxan MassSpec::CUtilities CUtilities.h
 0.02  Fri May 13 17:48:36 2005
 	- added more documentation
+0.03  Fri May 27 15:48:36 2005
+	- made bitstring handing much more thread-safe
 
