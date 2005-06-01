@@ -7,4 +7,6 @@ Revision history for Perl extension MassSpec::CUtilities.
 	- added more documentation
 0.03  Fri May 27 15:48:36 2005
 	- made bitstring handing much more thread-safe
+0.04  Wed June 1 09:48:36 2005
+	- added binarySearchSpectrum
 

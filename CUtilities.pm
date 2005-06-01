@@ -27,7 +27,7 @@ our @EXPORT = qw(
 	
 );
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 sub AUTOLOAD {
     # This AUTOLOAD is used to 'autoload' constants from the constant()
@@ -177,6 +177,11 @@ lot of bits).
 
 Test the bitstrings encoded in C<encodeAsBitString>() against one another in a manner
 analogous to C<testManyPrimeProducts>().
+
+=item B<binarySearchSpectrum>(mass,extended_spectrum)
+
+Perform a binary search of C<extended_spectrum>, and return the index of the entry just
+greater than C<mass>.
 
 =back
 

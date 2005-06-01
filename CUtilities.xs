@@ -369,7 +369,7 @@ computePeptideMass(peptide)
 		} while (*peptide);
 	OUTPUT:
 		RETVAL
-	
+
 int
 initDecoderTree(Huffman_code,values)
 	AV *Huffman_code
@@ -773,6 +773,37 @@ printf("*");
 			}
 		}
 		RETVAL = total;
+#ifdef WIN
+}
+#endif
+	OUTPUT:
+		RETVAL
+
+int
+binarySearchSpectrum(mass,extended_spectrum)
+	double mass
+	AV *extended_spectrum
+	CODE:
+#ifdef WIN
+{
+#endif
+		int mid,low,high;
+		double val;
+		SV **sv;
+
+		low = 0;
+		high = av_len(extended_spectrum);
+		while (low <= high) {
+			mid = (low+high)/2;
+			sv = av_fetch(extended_spectrum,mid,0);
+			val = SvNV(*sv);
+			if (mass < val) 
+				high = mid - 1;
+			else
+				low = mid + 1;
+		}
+		if (mass > val) mid++;
+		RETVAL = mid;
 #ifdef WIN
 }
 #endif
