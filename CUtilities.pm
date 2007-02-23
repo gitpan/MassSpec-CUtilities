@@ -27,7 +27,7 @@ our @EXPORT = qw(
 	
 );
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 sub AUTOLOAD {
     # This AUTOLOAD is used to 'autoload' constants from the constant()
@@ -177,6 +177,10 @@ lot of bits).
 
 Test the bitstrings encoded in C<encodeAsBitString>() against one another in a manner
 analogous to C<testManyPrimeProducts>().
+
+=item B<quickAACLookup>(minmass,maxmass,answer)
+
+For a small in-memory database (AACs up to 4 residues long), find all the AACs associated with a mass range.
 
 =item B<binarySearchSpectrum>(mass,extended_spectrum)
 
